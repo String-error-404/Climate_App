@@ -7,24 +7,23 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  @override
+  // ! the init state calls once it is initalize it will not be called everytime like buildcontext.....
+  void initState() {
+    super.initState();
+    getLocation();
+  }
+
   void getLocation() async {
     Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
     print(position);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: RaisedButton(
-          onPressed: () {
-            //Get the current location
-            getLocation();
-          },
-          child: Text('Get Location'),
-        ),
-      ),
-    );
+    print('build state got triggered');
+    return Scaffold();
   }
 }
+// hastage
