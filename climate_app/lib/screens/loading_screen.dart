@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:climate_app/services/location.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -15,15 +16,29 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void getLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
-    print(position);
+    Location location = Location();
+    await location.getCurrentLocation();
+    print(location.latitude);
+    print(location.longitude);
   }
 
   @override
   Widget build(BuildContext context) {
-    print('build state got triggered');
-    return Scaffold();
+    String myMargin = 'abc';
+    double myMarginAsDouble;
+
+    try {
+      myMarginAsDouble = double.parse(myMargin);
+    } catch (e) {
+      print(e);
+      // this will not get a exception error in the case we are assigning a new value................to it.......
+      myMarginAsDouble = 30.0;
+    }
+    return Scaffold(
+      body: Container(
+        margin: EdgeInsets.all(myMarginAsDouble ?? 30.0),
+        color: Colors.red,
+      ),
+    );
   }
 }
-// hastage
