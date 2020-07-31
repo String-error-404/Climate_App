@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:climate_app/utilities/constants.dart';
-import 'package:http/http.dart';
-
 
 class LocationScreen extends StatefulWidget {
+  LocationScreen({this.locationWeather});
+
+  final locationWeather;
+
   @override
   _LocationScreenState createState() => _LocationScreenState();
+  // ! wanna to get the location screen stateful widget to the state.....
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  // the text widget don't live on the state it lives on the build method...
+  // ! the location screen object and location screen state are linked...
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,3 +82,7 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
+
+// double temperature = decodedData['main']['temp'];
+// int conditon = decodedData['weather'][0]['id'];
+// String cityName = decodedData['name'];

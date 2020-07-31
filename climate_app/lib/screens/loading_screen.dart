@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:climate_app/services/location.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:climate_app/services/networking.dart';
+import 'package:climate_app/screens/location_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 const apiKey = '3aa31a13f1f5e346b24eab6a2306a41d';
 
@@ -22,51 +23,41 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   void initState() {
     super.initState();
-    getLocation();
+    getLocationData();
   }
 
-  void getLocation() async {
+  void getLocationData() async {
     Location location = Location();
     await location.getCurrentLocation();
     latitude = location.latitude;
     longitude = location.longitude;
 
-    getData();
-  }
+    NetworkHelper networkHelper = NetworkHelper(
+        url:
+            'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
 
-  void getData() async {
-    http.Response response = await http.get(
-        // ! must modify to get the your orginal file...
+    var weatherData = await networkHelper.getData();
 
-        'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return LocationScreen(
+        locationWeather: weatherData,
+      );
+    }));
 
-    // ! if we print only responce it will only give the instance of Response
-
-    // ? we have to trigger the the properites of response
-
-    // * the status code is the when we are interacting with external servers , they need to a short and unified way of telling us what exactly happened when we interact with them...
-
-    if (response.statusCode == 200) {
-      String data = response.body;
-
-      var decodedData = jsonDecode(data);
-
-      var temperature = decodedData['main']['temp'];
-      print(temperature);
-      var conditon = decodedData['weather'][0]['id'];
-      print(conditon);
-      var cityName = decodedData['name'];
-      print(cityName);
-      //temp
-      //id
-      // cityname
-    } else {
-      print(response.statusCode);
-    }
+    //temp
+    //id
+    // cityname
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Center(
+        child: SpinKitWave(
+          color: Colors.white,
+          size: 50.0,
+        ),
+      ),
+    );
   }
 }
