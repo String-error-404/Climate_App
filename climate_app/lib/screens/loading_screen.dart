@@ -3,8 +3,7 @@ import 'package:climate_app/services/location.dart';
 import 'package:climate_app/services/networking.dart';
 import 'package:climate_app/screens/location_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
-const apiKey = '3aa31a13f1f5e346b24eab6a2306a41d';
+import 'package:climate_app/services/weather.dart';
 
 // ! it is ...
 // ! to able go to a empty json line item use index value
@@ -27,23 +26,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void getLocationData() async {
-    Location location = Location();
-    await location.getCurrentLocation();
-    latitude = location.latitude;
-    longitude = location.longitude;
+    // because the getcurrent location is future
 
-    NetworkHelper networkHelper = NetworkHelper(
-        url:
-            'https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey');
-
-    var weatherData = await networkHelper.getData();
+    var weatherData = await WeatherModel().getLocationWeather();
 
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return LocationScreen(
         locationWeather: weatherData,
       );
     }));
-
     //temp
     //id
     // cityname
@@ -53,9 +44,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: SpinKitWave(
+        child: SpinKitDoubleBounce(
           color: Colors.white,
-          size: 50.0,
+          size: 100.0,
         ),
       ),
     );

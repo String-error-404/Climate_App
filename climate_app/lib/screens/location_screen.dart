@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:climate_app/utilities/constants.dart';
+import 'package:climate_app/services/weather.dart';
 
 class LocationScreen extends StatefulWidget {
   LocationScreen({this.locationWeather});
@@ -12,10 +13,48 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  WeatherModel weather = WeatherModel();
+
+  int temperature; // changing int for the two value and a not a long value...
+  String weatherIcon;
+  String cityName;
+  String weatherMessage;
+
+  @override
+  void initState() {
+    super.initState();
+
+    updateUI(widget.locationWeather);
+  }
+
+  void updateUI(dynamic weatherData) {
+    setState(() {
+      if (weatherData == null) {
+        temperature = 0;
+        weatherIcon = 'Error';
+        weatherMessage = 'unable to get the weather';
+        cityName = '';
+
+        return;
+      }
+
+      temperature = weatherData['main']['temp'];
+
+      var condition = weatherData['weather'][0]['id'];
+      weatherIcon = weather.getWeatherIcon(condition);
+      weatherMessage = weather.getMessage(temperature);
+      cityName = weatherData['name'];
+    });
+  }
+
+  @override
+
   // the text widget don't live on the state it lives on the build method...
   // ! the location screen object and location screen state are linked...
 
-  @override
+  // * the widget property points to it parent stateful widget...
+  // ! if we tap into the widget we will get access to the stateful widget...
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -37,14 +76,20 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var weatherData = await weather.getLocationWeather();
+                      updateUI(weatherData);
+                    },
                     child: Icon(
                       Icons.near_me,
                       size: 50.0,
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var weatherData = await weather.getLocationWeather();
+                      updateUI(weatherData);
+                    },
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,
@@ -57,7 +102,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '32°',
+                      '$temperature°',
                       style: kTempTextStyle,
                     ),
                     Text(
@@ -70,7 +115,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "It's 🍦 time in San Francisco!",
+                  '$weatherMessage in $cityName',
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
@@ -82,7 +127,3 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
-
-// double temperature = decodedData['main']['temp'];
-// int conditon = decodedData['weather'][0]['id'];
-// String cityName = decodedData['name'];
