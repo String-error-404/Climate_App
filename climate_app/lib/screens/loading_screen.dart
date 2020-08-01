@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:climate_app/services/location.dart';
-import 'package:climate_app/services/networking.dart';
+
 import 'package:climate_app/screens/location_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:climate_app/services/weather.dart';
@@ -15,8 +14,6 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
   @override
-  double longitude;
-  double latitude;
 
   // ! the init state calls once it is initalize it will not be called everytime like buildcontext.....
 
